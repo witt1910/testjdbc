@@ -49,16 +49,8 @@ public class StudentDaoJDBC implements StudentDao {
 			st.setInt(1, id);
 			rs = st.executeQuery();
 			if(rs.next()) {
-				School sch = new School();
-				sch.setId(rs.getInt("SchoolId"));
-				sch.setName(rs.getString("SchName"));
-				Student obj = new Student();
-				obj.setId(rs.getInt("Id"));
-				obj.setName(rs.getString("Name"));
-				obj.setBirthDate(rs.getDate("BirthDate"));
-				obj.setDemand(rs.getString("Demand"));
-				obj.setGrade(rs.getInt("Grade"));
-				obj.setSchool(sch);
+				School sch = instantiateSchool(rs);
+				Student obj = instantiateStudent(rs, sch);
 				return obj;
 			}
 			return null;
@@ -71,6 +63,26 @@ public class StudentDaoJDBC implements StudentDao {
 			DB.closeStatement(st);
 		}
 	}
+
+	private Student instantiateStudent(ResultSet rs, School sch) throws SQLException {
+		Student obj = new Student();
+		obj.setId(rs.getInt("Id"));
+		obj.setName(rs.getString("Name"));
+		obj.setBirthDate(rs.getDate("BirthDate"));
+		obj.setDemand(rs.getString("Demand"));
+		obj.setGrade(rs.getInt("Grade"));
+		obj.setSchool(sch);
+		return obj;
+	}
+
+	private School instantiateSchool(ResultSet rs) throws SQLException {
+		School sch = new School();
+		sch.setId(rs.getInt("SchoolId"));
+		sch.setName(rs.getString("SchName"));
+		return sch;
+	}
+	
+	
 
 	@Override
 	public List<Student> findAll() {

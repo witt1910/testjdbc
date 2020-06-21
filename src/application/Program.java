@@ -13,8 +13,8 @@ public class Program {
 
 		StudentDao studentDao = DaoFactory.createStudentDao();
 		
+		System.out.println("=== TEST 1: student findById ===");
 		Student student = studentDao.findById(9);
-		
 		System.out.println(student);
 		
 	}
