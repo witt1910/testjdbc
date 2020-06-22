@@ -21,13 +21,13 @@ public class Program {
 		System.out.println("=== TEST 2: student findBySchool ===");
 		School school = new School(2, null);
 		List<Student> list = studentDao.findBySchool(school);
-		
 		list.forEach(System.out::println);
 
 		System.out.println();
-		System.out.println("=== TEST 3: ===");
+		System.out.println("=== TEST 3: student findAll ===");
+		list = studentDao.findAll();
+		list.forEach(System.out::println);
 
-		
 	}
 
 }
