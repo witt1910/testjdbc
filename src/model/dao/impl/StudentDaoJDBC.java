@@ -30,7 +30,8 @@ public class StudentDaoJDBC implements StudentDao {
 		PreparedStatement st = null;
 		try {
 			st = conn.prepareStatement(
-					"INSERT INTO student " + "(Name, BirthDate, Demand, Grade, SchoolId) " + "VALUES (?, ?, ?, ?, ?)",
+					"INSERT INTO student " + "(Name, BirthDate, Demand, Grade, SchoolId) " 
+					+ "VALUES (?, ?, ?, ?, ?)",
 					Statement.RETURN_GENERATED_KEYS);
 
 			st.setString(1, obj.getName());
@@ -63,7 +64,8 @@ public class StudentDaoJDBC implements StudentDao {
 		PreparedStatement st = null;
 		try {
 			st = conn.prepareStatement("UPDATE student "
-					+ "SET Name = ?, BirthDate = ?, Demand = ?, Grade = ?, SchoolId = ? " + "WHERE id = ?");
+					+ "SET Name = ?, BirthDate = ?, Demand = ?, Grade = ?, SchoolId = ? " 
+					+ "WHERE id = ?");
 
 			st.setString(1, obj.getName());
 			st.setDate(2, new java.sql.Date(obj.getBirthDate().getTime()));
@@ -83,7 +85,23 @@ public class StudentDaoJDBC implements StudentDao {
 
 	@Override
 	public void deleteById(Integer id) {
-
+		PreparedStatement st = null;
+		try {
+			st = conn.prepareStatement("DELETE FROM student WHERE Id = ?");
+			
+			st.setInt(1, id);
+			
+			int rows = st.executeUpdate();
+			if (rows == 0) {
+				throw new DbException("Insert valid Id.");
+			}
+		}
+		catch (SQLException e) {
+			throw new DbException(e.getMessage());
+		}
+		finally {
+			DB.closeStatement(st);
+		}
 	}
 
 	@Override
@@ -91,8 +109,10 @@ public class StudentDaoJDBC implements StudentDao {
 		PreparedStatement st = null;
 		ResultSet rs = null;
 		try {
-			st = conn.prepareStatement("SELECT student.*, school.Name as SchName " + "FROM student INNER JOIN school "
-					+ "ON student.SchoolId = school.Id " + "WHERE student.Id = ?");
+			st = conn.prepareStatement("SELECT student.*, school.Name as SchName " 
+					+ "FROM student INNER JOIN school "
+					+ "ON student.SchoolId = school.Id " 
+					+ "WHERE student.Id = ?");
 
 			st.setInt(1, id);
 			rs = st.executeQuery();
@@ -166,8 +186,10 @@ public class StudentDaoJDBC implements StudentDao {
 		ResultSet rs = null;
 		try {
 			st = conn.prepareStatement(
-					"SELECT student.*, school.Name as SchName\r\n" + "FROM student INNER JOIN school\r\n"
-							+ "ON student.SchoolId = school.Id\r\n" + "WHERE SchoolId = ? " + "ORDER BY Name");
+					"SELECT student.*, school.Name as SchName " 
+					+ "FROM student INNER JOIN school "
+					+ "ON student.SchoolId = school.Id "
+					+ "WHERE SchoolId = ? ORDER BY Name");
 
 			st.setInt(1, school.getId());
 
