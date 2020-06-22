@@ -1,6 +1,6 @@
 package application;
 
-import java.util.Date;
+import java.util.List;
 
 import model.dao.DaoFactory;
 import model.dao.StudentDao;
@@ -16,6 +16,17 @@ public class Program {
 		System.out.println("=== TEST 1: student findById ===");
 		Student student = studentDao.findById(9);
 		System.out.println(student);
+		
+		System.out.println();
+		System.out.println("=== TEST 2: student findBySchool ===");
+		School school = new School(2, null);
+		List<Student> list = studentDao.findBySchool(school);
+		
+		list.forEach(System.out::println);
+
+		System.out.println();
+		System.out.println("=== TEST 3: ===");
+
 		
 	}
 
