@@ -30,19 +30,17 @@ public class StudentDaoJDBC implements StudentDao {
 		PreparedStatement st = null;
 		try {
 			st = conn.prepareStatement(
-				"INSERT INTO student "
-				+ "(Name, BirthDate, Demand, Grade, SchoolId) "
-				+ "VALUES (?, ?, ?, ?, ?)",
-				Statement.RETURN_GENERATED_KEYS);
-	
+					"INSERT INTO student " + "(Name, BirthDate, Demand, Grade, SchoolId) " + "VALUES (?, ?, ?, ?, ?)",
+					Statement.RETURN_GENERATED_KEYS);
+
 			st.setString(1, obj.getName());
 			st.setDate(2, new java.sql.Date(obj.getBirthDate().getTime()));
-			st.setString(3,  obj.getDemand());
+			st.setString(3, obj.getDemand());
 			st.setInt(4, obj.getGrade());
 			st.setInt(5, obj.getSchool().getId());
-			
+
 			int rowsAffected = st.executeUpdate();
-			
+
 			if (rowsAffected > 0) {
 				ResultSet rs = st.getGeneratedKeys();
 				if (rs.next()) {
@@ -50,22 +48,37 @@ public class StudentDaoJDBC implements StudentDao {
 					obj.setId(id);
 				}
 				DB.closeResultSet(rs);
-			}
-			else {
+			} else {
 				throw new DbException("Unexpected error! No rows affected!");
 			}
-		}
-		catch (SQLException e) {
+		} catch (SQLException e) {
 			throw new DbException(e.getMessage());
-		}
-		finally {
+		} finally {
 			DB.closeStatement(st);
 		}
 	}
 
 	@Override
 	public void update(Student obj) {
+		PreparedStatement st = null;
+		try {
+			st = conn.prepareStatement("UPDATE student "
+					+ "SET Name = ?, BirthDate = ?, Demand = ?, Grade = ?, SchoolId = ? " + "WHERE id = ?");
 
+			st.setString(1, obj.getName());
+			st.setDate(2, new java.sql.Date(obj.getBirthDate().getTime()));
+			st.setString(3, obj.getDemand());
+			st.setInt(4, obj.getGrade());
+			st.setInt(5, obj.getSchool().getId());
+			st.setInt(6, obj.getId());
+
+			st.executeUpdate();
+
+		} catch (SQLException e) {
+			throw new DbException(e.getMessage());
+		} finally {
+			DB.closeStatement(st);
+		}
 	}
 
 	@Override
@@ -120,11 +133,8 @@ public class StudentDaoJDBC implements StudentDao {
 		PreparedStatement st = null;
 		ResultSet rs = null;
 		try {
-			st = conn.prepareStatement(
-					"SELECT student.*, school.Name as SchName " 
-					+ "FROM student INNER JOIN school "
-					+ "ON student.SchoolId = school.Id " 
-					+ "ORDER BY Name");
+			st = conn.prepareStatement("SELECT student.*, school.Name as SchName " + "FROM student INNER JOIN school "
+					+ "ON student.SchoolId = school.Id " + "ORDER BY Name");
 
 			rs = st.executeQuery();
 

@@ -31,12 +31,22 @@ public class Program {
 
 		System.out.println();
 		System.out.println("=== TEST 4: student insert ===");
+		/*
 		Student newStudent = new Student(null, "Antonia de Almeida", new Date(), "Dislexia", 4, school);
 		studentDao.insert(newStudent);
 		System.out.println("Inserted! New id = " + newStudent.getId());
+		 */
+		System.out.println("Inserted ok.");
 		
-		
-		
+		System.out.println();
+		System.out.println("=== TEST 5: student update ===");
+		/*
+		student = studentDao.findById(1);
+		student.setName("João Ferreira Coelho");
+		studentDao.update(student);
+		System.out.println("Update completed!");
+		*/
+		System.out.println("Updated ok.");
 	
 	}
 
