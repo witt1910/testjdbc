@@ -1,5 +1,6 @@
 package application;
 
+import java.util.Date;
 import java.util.List;
 
 import model.dao.DaoFactory;
@@ -28,6 +29,15 @@ public class Program {
 		list = studentDao.findAll();
 		list.forEach(System.out::println);
 
+		System.out.println();
+		System.out.println("=== TEST 4: student insert ===");
+		Student newStudent = new Student(null, "Antonia de Almeida", new Date(), "Dislexia", 4, school);
+		studentDao.insert(newStudent);
+		System.out.println("Inserted! New id = " + newStudent.getId());
+		
+		
+		
+	
 	}
 
 }

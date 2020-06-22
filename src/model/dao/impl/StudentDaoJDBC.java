@@ -9,6 +9,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.mysql.jdbc.Statement;
+
 import db.DB;
 import db.DbException;
 import model.dao.StudentDao;
@@ -25,7 +27,40 @@ public class StudentDaoJDBC implements StudentDao {
 
 	@Override
 	public void insert(Student obj) {
-
+		PreparedStatement st = null;
+		try {
+			st = conn.prepareStatement(
+				"INSERT INTO student "
+				+ "(Name, BirthDate, Demand, Grade, SchoolId) "
+				+ "VALUES (?, ?, ?, ?, ?)",
+				Statement.RETURN_GENERATED_KEYS);
+	
+			st.setString(1, obj.getName());
+			st.setDate(2, new java.sql.Date(obj.getBirthDate().getTime()));
+			st.setString(3,  obj.getDemand());
+			st.setInt(4, obj.getGrade());
+			st.setInt(5, obj.getSchool().getId());
+			
+			int rowsAffected = st.executeUpdate();
+			
+			if (rowsAffected > 0) {
+				ResultSet rs = st.getGeneratedKeys();
+				if (rs.next()) {
+					int id = rs.getInt(1);
+					obj.setId(id);
+				}
+				DB.closeResultSet(rs);
+			}
+			else {
+				throw new DbException("Unexpected error! No rows affected!");
+			}
+		}
+		catch (SQLException e) {
+			throw new DbException(e.getMessage());
+		}
+		finally {
+			DB.closeStatement(st);
+		}
 	}
 
 	@Override
